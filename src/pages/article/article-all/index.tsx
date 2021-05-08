@@ -15,7 +15,7 @@ const AllArticleTableList: React.FC<{}> = () => {
       valueType: 'textarea',
     },
     {
-      title: '状态',
+      title: '状态111111111111111',
       dataIndex: 'desc',
       valueType: 'textarea',
     },
