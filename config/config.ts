@@ -326,14 +326,14 @@ export default defineConfig({
                 {
                   name: 'article-all',
                   icon: 'smile',
-                  path: '/article/article-all',
-                  component: './article/article-all',
+                  path: '/article/article-all/articleAll',
+                  component: './article/article-all/articleAll',
                 },
                 {
-                  name: 'article-write',
+                  name: 'article-edit',
                   icon: 'smile',
-                  path: '/article/article-write',
-                  component: './article/article-write',
+                  path: '/article/article-edit/articleEditor',
+                  component: './article/article-edit/articleEditor',
                 },
                 {
                   name: 'article-category',

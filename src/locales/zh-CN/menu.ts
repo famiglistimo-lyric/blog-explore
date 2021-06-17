@@ -51,7 +51,7 @@ export default {
   'menu.editor.koni': '拓扑编辑器',
   'menu.article':'文章',
   'menu.article.article-all':'所有文章',
-  'menu.article.article-write':'写文章',
+  'menu.article.article-edit':'写文章',
   'menu.article.article-category':'分类目录',
   'menu.article.article-tag':'标签',
 };
