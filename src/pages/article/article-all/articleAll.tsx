@@ -21,6 +21,8 @@ import {getArticle, listCategory, listTag, pageArticle, saveArticle} from './art
 import type {Article, ArticleListItem, CategorySelectItem, TagSelectItem} from './data.d';
 
 const ArticleTableList: React.FC<{}> = () => {
+  const [form] = Form.useForm();
+  const [drawerForm] = Form.useForm();
   const inputStyle = {width: 250};
   const selectStyle = {width: 180};
   const ButtonStyle = {width: 80};
@@ -32,8 +34,6 @@ const ArticleTableList: React.FC<{}> = () => {
     labelCol: {span: 6},
     wrapperCol: {span: 16},
   };
-  const [form] = Form.useForm();
-  const [drawerForm] = Form.useForm();
   const columns = [
     {
       title: '标题',
@@ -86,18 +86,18 @@ const ArticleTableList: React.FC<{}> = () => {
       title: '评论数',
       dataIndex: 'commentCounts',
       render: (commentCounts: number) => (
-        commentCounts ? <Tag color='#ffa502' key={commentCounts} style={{borderRadius: '25px'}}>
+        <Tag color='#ffa502' key={commentCounts} style={{borderRadius: '25px'}}>
           {commentCounts}
-        </Tag> : null
+        </Tag>
       ),
     },
     {
       title: '访问数',
       dataIndex: 'views',
       render: (views: number) => (
-        views ? <Tag color='#00E0FF' key={views} style={{borderRadius: '25px'}}>
+        <Tag color='#00E0FF' key={views} style={{borderRadius: '25px'}}>
           {views}
-        </Tag> : null
+        </Tag>
       ),
     },
     {

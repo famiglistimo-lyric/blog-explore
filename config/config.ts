@@ -338,8 +338,8 @@ export default defineConfig({
                 {
                   name: 'article-category',
                   icon: 'smile',
-                  path: '/article/article-category',
-                  component: './article/article-category',
+                  path: '/article/article-category/articleCategory',
+                  component: './article/article-category/articleCategory',
                 },
                 {
                   name: 'article-tag',
