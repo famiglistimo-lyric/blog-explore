@@ -316,7 +316,7 @@ export default defineConfig({
             },
             {
               name:'article',
-              icon: 'smile',
+              icon: 'FormOutlined',
               path:'/article',
               routes: [
                 {

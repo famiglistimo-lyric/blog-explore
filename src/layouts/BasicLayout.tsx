@@ -8,16 +8,17 @@ import type {
   BasicLayoutProps as ProLayoutProps,
   Settings,
 } from '@ant-design/pro-layout';
-import ProLayout, { DefaultFooter, SettingDrawer } from '@ant-design/pro-layout';
-import React, { useEffect, useMemo, useRef } from 'react';
-import type { Dispatch } from 'umi';
-import { Link, useIntl, connect, history } from 'umi';
-import { GithubOutlined } from '@ant-design/icons';
-import { Result, Button } from 'antd';
+import ProLayout, {SettingDrawer} from '@ant-design/pro-layout';
+import React, {useEffect, useMemo, useRef} from 'react';
+// @ts-ignore
+import type {Dispatch} from 'umi';
+// @ts-ignore
+import {Link, useIntl, connect, history} from 'umi';
+import {Result, Button} from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
-import type { ConnectState } from '@/models/connect';
-import { getMatchMenu } from '@umijs/route-utils';
+import type {ConnectState} from '@/models/connect';
+import {getMatchMenu} from '@umijs/route-utils';
 import logo from '../assets/logo.svg';
 
 const noMatch = (
@@ -55,29 +56,13 @@ const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
   });
 
 const defaultFooterDom = (
-  <DefaultFooter
-    copyright={`${new Date().getFullYear()} 蚂蚁集团体验技术部出品`}
-    links={[
-      {
-        key: 'Ant Design Pro',
-        title: 'Ant Design Pro',
-        href: 'https://pro.ant.design',
-        blankTarget: true,
-      },
-      {
-        key: 'github',
-        title: <GithubOutlined />,
-        href: 'https://github.com/ant-design/ant-design-pro',
-        blankTarget: true,
-      },
-      {
-        key: 'Ant Design',
-        title: 'Ant Design',
-        href: 'https://ant.design',
-        blankTarget: true,
-      },
-    ]}
-  />
+  <footer>
+    <div style={{padding:'0px 16px',marginBottom:'24px',marginTop:'48px',textAlign:'center'}}>
+      <div>
+        <span>Proudly power by <a href="https://github.com/famiglistimo-lyric" target={'_blank'}>lyric</a></span>
+      </div>
+    </div>
+  </footer>
 );
 
 const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
@@ -115,7 +100,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       },
     [location.pathname],
   );
-  const { formatMessage } = useIntl();
+  const {formatMessage} = useIntl();
   return (
     <>
       <ProLayout
@@ -161,7 +146,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
           return null;
         }}
         menuDataRender={menuDataRender}
-        rightContentRender={() => <RightContent />}
+        rightContentRender={() => <RightContent/>}
         postMenuData={(menuData) => {
           menuDataRef.current = menuData || [];
           return menuData || [];
@@ -184,7 +169,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
   );
 };
 
-export default connect(({ global, settings }: ConnectState) => ({
+export default connect(({global, settings}: ConnectState) => ({
   collapsed: global.collapsed,
   settings,
 }))(BasicLayout);

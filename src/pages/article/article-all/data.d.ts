@@ -7,3 +7,27 @@ export interface ArticleListItem {
   page: number;
   pageSize: number | undefined;
 }
+
+export interface Article {
+  id?: Key;
+  title: string;
+  status: number;
+  categoryId: number;
+  tagList: any[];
+  stamp: boolean;
+  comments: boolean;
+  recommend: boolean;
+  appreciate: boolean;
+
+}
+
+export interface CategorySelectItem {
+  id?: Key;
+  name?: string;
+}
+
+export interface TagSelectItem {
+  id?: Key;
+  name?: string;
+}
+

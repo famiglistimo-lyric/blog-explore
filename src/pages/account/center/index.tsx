@@ -2,7 +2,9 @@ import { PlusOutlined, HomeOutlined, ContactsOutlined, ClusterOutlined } from '@
 import { Avatar, Card, Col, Divider, Input, Row, Tag } from 'antd';
 import React, { Component, useState, useRef } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
+// @ts-ignore
 import type { Dispatch } from 'umi';
+// @ts-ignore
 import { Link, connect } from 'umi';
 import type { RouteChildrenProps } from 'react-router';
 import type { ModalState } from './model';
