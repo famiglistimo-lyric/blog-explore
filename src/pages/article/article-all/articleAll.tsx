@@ -159,11 +159,7 @@ const ArticleTableList: React.FC<{}> = () => {
   };
 
   const error = (result: string) => {
-    message.error(result);
-    pageArticle({page, pageSize}).then(r => {
-      setDataSource(r.obj.records)
-      setTotal(r.obj.total);
-    })
+    message.warning(result);
   };
 
   const pageArticleState = (values: ArticleListItem) => {
@@ -203,7 +199,6 @@ const ArticleTableList: React.FC<{}> = () => {
         onClose();
         success(r.msg);
       }else{
-        onClose();
         error(r.msg);
       }
     });

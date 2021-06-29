@@ -5,3 +5,8 @@ export interface ArticleCategoryItem {
   page: number;
   pageSize: number | undefined;
 }
+
+export interface Category {
+  id?: key;
+  name?: string;
+}
