@@ -19,7 +19,7 @@ import {
   Popconfirm,
 } from "antd";
 import {ArticleCategoryItem, Category} from "@/pages/article/article-category/data";
-import {pageCategory, saveCategory} from "@/pages/article/article-category/category";
+import {deleteCategory, pageCategory, saveCategory} from "@/pages/article/article-category/category";
 import ButtonGroup from "antd/es/button/button-group";
 
 const ArticleCategory: React.FC<{}> = () => {
@@ -64,7 +64,7 @@ const ArticleCategory: React.FC<{}> = () => {
         let title = "您确定要删除'" + record.name + "'该分类吗？"
         return (
           <Space size="middle">
-            <a onClick={()=>categoryEdit(record.id,record.name)}>编辑</a>
+            <a onClick={() => categoryEdit(record.id, record.name)}>编辑</a>
             <Popconfirm
               title={title}
               onConfirm={() => confirm(record.id)}
@@ -103,14 +103,20 @@ const ArticleCategory: React.FC<{}> = () => {
     })
   }, [])
 
-  const categoryEdit = (id:number,name:string) =>{
+  const categoryEdit = (id: number, name: string) => {
     //执行编辑的逻辑
   }
 
   const confirm = (id: number) => {
-    // 执行删除逻辑
+    console.log(id)
+    deleteCategory(id).then(r=>{
+      message.success("删除成功");
+      pageCategory({page, pageSize}).then(r => {
+        setDataSource(r.obj.records)
+        setTotal(r.obj.total);
+      })
+    });
   }
-
   const success = (result: string) => {
     pageCategory({page, pageSize}).then(r => {
       setDataSource(r.obj.records)

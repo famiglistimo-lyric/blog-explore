@@ -156,6 +156,14 @@ const ArticleTableList: React.FC<{}> = () => {
       setDataSource(r.obj.records)
       setTotal(r.obj.total);
     })
+    listTag().then(r => {
+      let tagSelectItems: any = [];
+      r.obj.map((item: TagSelectItem) => {
+        tagSelectItems.push(<Select.Option key={item.id} value={item.id}>{item.name}</Select.Option>)
+      })
+      setTagSelectItems(tagSelectItems);
+      setTagList(r.obj);
+    })
   };
 
   const error = (result: string) => {
@@ -176,29 +184,33 @@ const ArticleTableList: React.FC<{}> = () => {
   }
 
   const putArticle = (values: Article) => {
+    console.log(values)
     let finalTagList: any = [];
-    values.tagList.map((tag: any) => {
+    for (let i = 0; i < values.tagList.length; i++) {
       // 如果是数据存在的tag是传的id,如果是数据库不存在的tag是传的新添加的标签
       if (tagList !== undefined) {
-        tagList.map((item: any) => {
-          if (item.id === tag) {
-            finalTagList.push({id: item.id, name: item.name})
+        let flag = true;
+        for (let j = 0; j < tagList.length; j++) {
+          if (tagList[j].id === values.tagList[i]) {
+            finalTagList.push({id: tagList[j].id, name: tagList[j].name});
+            flag = false;
+            break;
           }
-        })
-        if (typeof tag === 'string') {
-          finalTagList.push({id: null, name: tag})
+        }
+        if (flag) {
+          finalTagList.push({id: null, name: values.tagList[i]})
         }
       } else {
         // 数据库没有标签的情况
-        finalTagList.push({id: null, name: tag})
+        finalTagList.push({id: null, name: values.tagList[i]})
       }
-    })
+    }
     values.tagList = finalTagList;
     saveArticle(values).then(r => {
       if (r.success) {
         onClose();
         success(r.msg);
-      }else{
+      } else {
         error(r.msg);
       }
     });
