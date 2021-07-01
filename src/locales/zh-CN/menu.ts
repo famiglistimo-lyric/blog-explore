@@ -52,6 +52,6 @@ export default {
   'menu.article':'文章',
   'menu.article.article-all':'所有文章',
   'menu.article.article-edit':'写文章',
-  'menu.article.article-category':'分类目录',
-  'menu.article.article-tag':'标签',
+  'menu.article.article-category':'文章分类',
+  'menu.article.article-tag':'文章标签',
 };

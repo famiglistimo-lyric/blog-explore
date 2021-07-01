@@ -187,7 +187,7 @@ const ArticleTableList: React.FC<{}> = () => {
     console.log(values)
     let finalTagList: any = [];
     for (let i = 0; i < values.tagList.length; i++) {
-      // 如果是数据存在的tag是传的id,如果是数据库不存在的tag是传的新添加的标签
+      // 如果是数据存在的标签是传的id,如果是数据库不存在的标签是传的新添加的标签
       if (tagList !== undefined) {
         let flag = true;
         for (let j = 0; j < tagList.length; j++) {

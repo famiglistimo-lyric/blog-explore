@@ -14,17 +14,17 @@ import {
   message,
   Popconfirm,
 } from "antd";
-import {ArticleCategoryItem, Category} from "@/pages/article/article-category/data";
-import {deleteCategory, pageCategory, saveCategory} from "@/pages/article/article-category/category";
+import {ArticleTagItem, OneArticleTag} from "@/pages/article/article-tag/data";
+import {deleteTag, pageTag, saveTag} from "@/pages/article/article-tag/tag";
 import ButtonGroup from "antd/es/button/button-group";
 
-const ArticleCategory: React.FC<{}> = () => {
+const ArticleTag: React.FC<{}> = () => {
   const [form] = Form.useForm();
   const tailLayout = {
     wrapperCol: {offset: 0, span: 24},
   };
   const [spin, setSpin] = useState<boolean>(false);
-  const [dataSource, setDataSource] = useState<ArticleCategoryItem[]>([]);
+  const [dataSource, setDataSource] = useState<ArticleTagItem[]>([]);
   const initialPage = 1;
   const initialPageSize = 10;
   const [page, setPage] = useState<number>(initialPage);
@@ -34,7 +34,7 @@ const ArticleCategory: React.FC<{}> = () => {
   const [buttonControl, setButtonControl] = useState<number>(0);
   const columns = [
     {
-      title: '分类名称',
+      title: '标签名称',
       dataIndex: 'name',
       render: (name: string) => {
         let finalName = name;
@@ -57,10 +57,10 @@ const ArticleCategory: React.FC<{}> = () => {
       title: '操作',
       dataIndex: 'operation',
       render: (text: any, record: any) => {
-        let title = "您确定要删除'" + record.name + "'该分类吗？"
+        let title = "您确定要删除'" + record.name + "'该标签吗？"
         return (
           <Space size="middle">
-            <a onClick={() => categoryEdit(record.id, record.name)}>编辑</a>
+            <a onClick={() => tagEdit(record.id, record.name)}>编辑</a>
             <Popconfirm
               title={title}
               onConfirm={() => confirm(record.id)}
@@ -86,34 +86,34 @@ const ArticleCategory: React.FC<{}> = () => {
     onChange: (page: number, pageSize: number | undefined) => {
       setPage(page);
       setPageSize(pageSize);
-      pageCategory({page, pageSize}).then(r => {
+      pageTag({page, pageSize}).then(r => {
         setDataSource(r.obj.records)
         setTotal(r.obj.total);
       })
     }
   }
   useEffect(() => {
-    pageCategory({page, pageSize}).then(r => {
+    pageTag({page, pageSize}).then(r => {
       setDataSource(r.obj.records)
       setTotal(r.obj.total);
     })
   }, [])
 
-  const categoryEdit = (id: number, name: string) => {
+  const tagEdit = (id: number, name: string) => {
     //执行编辑的逻辑
   }
 
   const confirm = (id: number) => {
-    deleteCategory(id).then(r=>{
+    deleteTag(id).then(r=>{
       message.success("删除成功");
-      pageCategory({page, pageSize}).then(r => {
+      pageTag({page, pageSize}).then(r => {
         setDataSource(r.obj.records)
         setTotal(r.obj.total);
       })
     });
   }
   const success = (result: string) => {
-    pageCategory({page, pageSize}).then(r => {
+    pageTag({page, pageSize}).then(r => {
       setDataSource(r.obj.records)
       setTotal(r.obj.total);
     })
@@ -124,9 +124,9 @@ const ArticleCategory: React.FC<{}> = () => {
   const error = (result: string) => {
     message.warning(result);
   };
-  const onFinish = (values: Category) => {
+  const onFinish = (values: OneArticleTag) => {
     setSpin(true)
-    saveCategory(values).then(r => {
+    saveTag(values).then(r => {
       if (r.success) {
         success(r.msg);
         setSpin(false)
@@ -158,7 +158,7 @@ const ArticleCategory: React.FC<{}> = () => {
     <PageContainer>
       <Row gutter={24}>
         <Col span={14}>
-          <Card title="分类列表" bordered={false}>
+          <Card title="标签列表" bordered={false}>
             <Spin spinning={spin}>
               <Table columns={columns} dataSource={dataSource} rowKey={record => record.id} pagination={pagination}>
 
@@ -167,10 +167,10 @@ const ArticleCategory: React.FC<{}> = () => {
           </Card>
         </Col>
         <Col span={10}>
-          <Card title="添加分类" bordered={false}>
+          <Card title="添加标签" bordered={false}>
             <Spin spinning={spin}>
               <Form onFinish={onFinish} layout="vertical" form={form}>
-                <Form.Item name="name" label="分类名称：">
+                <Form.Item name="name" label="标签名称：">
                   <Input/>
                 </Form.Item>
                 <Form.Item {...tailLayout}>
@@ -189,4 +189,4 @@ const ArticleCategory: React.FC<{}> = () => {
     </PageContainer>
   );
 }
-export default ArticleCategory;
+export default ArticleTag;

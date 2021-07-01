@@ -344,8 +344,8 @@ export default defineConfig({
                 {
                   name: 'article-tag',
                   icon: 'smile',
-                  path: '/article/article-tag',
-                  component: './article/article-tag',
+                  path: '/article/article-tag/articleTag',
+                  component: './article/article-tag/articleTag',
                 },
               ],
             }
