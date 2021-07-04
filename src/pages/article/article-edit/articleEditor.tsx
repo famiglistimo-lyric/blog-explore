@@ -1,129 +1,155 @@
-import React from "react";
+import React, {useState} from "react";
 import {PageContainer} from "@ant-design/pro-layout";
-import {Button, Card, Col, Form, Input, Row, Select, Space, Table} from "antd";
+import {Button, Card, Col, Form, Input, message, Row, Select, Space, Table} from "antd";
+// @ts-ignore
+import MarkdownIt from 'markdown-it';
+import MdEditor, {Plugins} from 'react-markdown-editor-lite';
+import 'react-markdown-editor-lite/lib/index.css';
+// @ts-ignore
+import emoji from 'markdown-it-emoji'
+// @ts-ignore
+import subscript from 'markdown-it-sub'
+// @ts-ignore
+import superscript from 'markdown-it-sup'
+// @ts-ignore
+import footnote from 'markdown-it-footnote'
+// @ts-ignore
+import deflist from 'markdown-it-deflist'
+// @ts-ignore
+import abbreviation from 'markdown-it-abbr'
+// @ts-ignore
+import insert from 'markdown-it-ins'
+// @ts-ignore
+import mark from 'markdown-it-mark';
+// @ts-ignore
+import tasklists from 'markdown-it-task-lists';
+import hljs from "highlight.js";
+import 'highlight.js/styles/atom-one-light.css';
+import {saveArticle} from "@/pages/article/article-all/article";
 
+const PLUGINS = undefined;
+MdEditor.use(Plugins.TabInsert, {
+  tabMapValue: 1, // note that 1 means a '\t' instead of ' '.
+});
 const AllArticleTableList: React.FC<{}> = () => {
-  // let articlePage = {
-  //   page: 1,
-  //   size: 10
-  // }
+  const [form] = Form.useForm();
+  const [articleContent, setArticleContent] = useState<any>("");
+  const [taskLists, setTaskLists] = useState<any>(null);
+  const [mdEditor, setMdEditor] = useState<any>(null);
+  const mdParser = new MarkdownIt({
+    html: true,
+    linkify: true,
+    typographer: true,
+    highlight(str: any, lang: any) {
+      if (lang && hljs.getLanguage(lang)) {
+        try {
+          return hljs.highlight(lang, str, true).value
+        } catch (__) {
+        }
+      }
+      return ''
+    },
+  })
+    //自定义插件
+    .use(emoji)
+    .use(subscript)
+    .use(superscript)
+    .use(footnote)
+    .use(deflist)
+    .use(abbreviation)
+    .use(insert)
+    .use(mark)
+    // todo
+    .use(tasklists)
+  const handleEditorChange = (it: { text: string; html: string }, event: any) => {
+    // console.log('handleEditorChange', it.text, it.html, event);
+    setArticleContent(it.text);
+  };
+  // 上传图片
+  const handleImageUpload = (file: File,callback:any) => {
+    console.log("大家好啊");
+    return "";
+    // return new Promise(resolve => {
+    //   const reader = new FileReader();
+    //   reader.onload = data => {
+    //     // @ts-ignore
+    //     resolve(data.target.result);
+    //   };
+    //   reader.readAsDataURL(file);
+    // });
+  };
 
-  const inputStyle = {width: 250};
-  const selectStyle = {width: 180};
-  const ButtonStyle = {width: 80};
-  const style = {display: 'flex', justifyContent: 'center'};
-  const dataSource = [
-    {
-      key: '1',
-      title: '胡彦斌',
-      state: 32,
-      tag: '西湖区湖底公园1号',
-    },
-    {
-      key: '2',
-      title: '胡彦祖',
-      state: 42,
-      tag: '西湖区湖底公园1号',
-    },
-  ];
-  const columns = [
-    {
-      title: '标题',
-      dataIndex: 'title',
-      valueType: 'textarea',
-    },
-    {
-      title: '状态',
-      dataIndex: 'state',
-      valueType: 'textarea',
-    },
-    {
-      title: '分类',
-      dataIndex: 'category',
-      valueType: 'textarea',
-    },
-    {
-      title: '标签',
-      dataIndex: 'tag',
-      valueType: 'textarea',
-    },
-    {
-      title: '评论数',
-      dataIndex: 'commentCounts',
-      valueType: 'textarea',
-    },
-    {
-      title: '访问数',
-      dataIndex: 'visitCounts',
-      valueType: 'textarea',
-    },
-    {
-      title: '发布时间',
-      dataIndex: 'publishTime',
-      valueType: 'textarea',
-    },
-    {
-      title: '操作',
-      dataIndex: 'operation',
-      valueType: 'textarea',
-    },
-  ];
-  // @ts-ignore
+  function renderHTML(text: string) {
+    return mdParser.render(text);
+  }
+
+  const onFinish = (values: any) => {
+    let title = values.title;
+    const markdownContent = mdEditor.getMdValue();
+    let warnMessage = "";
+    if (markdownContent === "") {
+      warnMessage = "内容不允许为空。"
+    }
+    if (typeof (title) == "undefined" || title == "") {
+      warnMessage += "标题不允许为空。"
+    }
+    if (warnMessage != "") {
+      message.warn(warnMessage);
+      return;
+    }
+    let article = {
+      title: title, content: markdownContent, status: 1
+      , categoryId: 1, tagList: [{id: 9}], stamp: true, comments: true, recommend: true, appreciate: true
+    };
+    saveArticle(article).then(r => {
+      if (r.success) {
+        message.success(r.msg)
+        form.resetFields();
+        setArticleContent("");
+      } else {
+        message.warn(r.msg);
+      }
+    })
+  }
   return (
-    <PageContainer>
-      <Space direction={"vertical"} style={{width: '100%'}}>
-        <Card>
-          <Form>
-            <Row gutter={16}>
-              <Col className="gutter-row" span={6}>
-                <Form.Item name="title" label="标题" style={inputStyle}>
-                  <Input/>
-                </Form.Item>
-              </Col>
-              <Col className="gutter-row" span={6}>
-                <Form.Item name="title" label="状态">
-                  <Select placeholder="请选择文章状态" style={selectStyle}>
+    <>
+      <Form onFinish={onFinish} form={form}>
+        <Form.Item name="title">
+          <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
+            <Input placeholder="文章标题" style={{width: 600, marginRight: "13px"}}/>
+            <Button htmlType="submit" type="primary" style={{marginRight: "13px"}}>保存</Button>
+            <Button htmlType="submit" type="primary" style={{marginRight: "13px"}}>存为草稿</Button>
+          </div>
+        </Form.Item>
+      </Form>
+      <div className="editor-wrap" style={{marginTop: '30px'}}>
+        <MdEditor
+          ref={node => setMdEditor(node)}
+          style={{height: '500px', width: '100%'}}
+          value={articleContent}
+          renderHTML={renderHTML}
+          plugins={PLUGINS}
+          config={{
+            view: {
+              menu: true,
+              md: true,
+              html: true,
+              fullScreen: true,
+              hideMenu: true,
+            },
+            table: {
+              maxRow: 5,
+              maxCol: 6,
+            },
+            syncScrollMode: ['leftFollowRight', 'rightFollowLeft'],
+          }}
+          onChange={handleEditorChange}
+          onImageUpload={handleImageUpload}
+        />
+      </div>
+    </>
 
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col className="gutter-row" span={6}>
-                <Form.Item name="title" label="分类">
-                  <Select placeholder="请选择分类" style={selectStyle}>
 
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col className="gutter-row" span={6}>
-                <Form.Item name="title" label="标签">
-                  <Select placeholder="请选择标签" style={selectStyle}>
-
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row>
-              <Col className="gutter-row" span={6} style={style} offset={18}>
-                <Space size={"middle"}>
-                  <Button type="primary" style={ButtonStyle}>查询</Button>
-                  <Button style={ButtonStyle}>重置</Button>
-                </Space>
-              </Col>
-            </Row>
-          </Form>
-        </Card>
-        <Card>
-          <Table columns={columns} dataSource={dataSource}>
-
-          </Table>
-        </Card>
-        <Card>
-          <Table columns={columns} dataSource={dataSource}>
-
-          </Table>
-        </Card>
-      </Space>
-    </PageContainer>
   )
 }
 export default AllArticleTableList;

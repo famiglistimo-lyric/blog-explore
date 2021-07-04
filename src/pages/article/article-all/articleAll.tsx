@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import {PageContainer} from "@ant-design/pro-layout";
 import {
   Badge,
   Button,
@@ -273,61 +272,59 @@ const ArticleTableList: React.FC<{}> = () => {
   }, [])
   return (
     <>
-      <PageContainer>
-        <Space direction={"vertical"} style={{width: '100%'}}>
-          <Card>
-            <Form onFinish={pageArticleState} form={form}>
-              <Row gutter={16}>
-                <Col className="gutter-row" span={6}>
-                  <Form.Item name="title" label="标题" style={inputStyle}>
-                    <Input/>
-                  </Form.Item>
-                </Col>
-                <Col className="gutter-row" span={6}>
-                  <Form.Item name="status" label="文章状态">
-                    <Select placeholder="请选择文章状态" style={selectStyle}>
-                      <Select.Option key={0} value={0}>草稿</Select.Option>
-                      <Select.Option key={1} value={1}>已发布</Select.Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col className="gutter-row" span={6}>
-                  <Form.Item name="categoryId" label="文章分类">
-                    <Select placeholder="请选择分类" style={selectStyle}>
-                      {categorySelectItems}
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col className="gutter-row" span={6}>
-                  <Form.Item name="tagId" label="文章标签">
-                    <Select placeholder="请选择标签" style={selectStyle}>
-                      {tagSelectItems}
-                    </Select>
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col className="gutter-row" span={6} style={style} offset={18}>
-                  <Space size={"middle"}>
-                    <Button type="primary" style={ButtonStyle} htmlType="submit">查询</Button>
-                    <Button style={ButtonStyle} onClick={() => {
-                      form.resetFields();
-                      resetPageArticleState();
-                    }}>重置</Button>
-                  </Space>
-                </Col>
-              </Row>
-            </Form>
-          </Card>
-          <Card>
-            <Spin spinning={spin}>
-              <Table columns={columns} dataSource={dataSource} rowKey={record => record.id} pagination={pagination}>
+      <Space direction={"vertical"} style={{width: '100%'}}>
+        <Card>
+          <Form onFinish={pageArticleState} form={form}>
+            <Row gutter={16}>
+              <Col className="gutter-row" span={6}>
+                <Form.Item name="title" label="标题" style={inputStyle}>
+                  <Input/>
+                </Form.Item>
+              </Col>
+              <Col className="gutter-row" span={6}>
+                <Form.Item name="status" label="文章状态">
+                  <Select placeholder="请选择文章状态" style={selectStyle}>
+                    <Select.Option key={0} value={0}>草稿</Select.Option>
+                    <Select.Option key={1} value={1}>已发布</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col className="gutter-row" span={6}>
+                <Form.Item name="categoryId" label="文章分类">
+                  <Select placeholder="请选择分类" style={selectStyle}>
+                    {categorySelectItems}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col className="gutter-row" span={6}>
+                <Form.Item name="tagId" label="文章标签">
+                  <Select placeholder="请选择标签" style={selectStyle}>
+                    {tagSelectItems}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col className="gutter-row" span={6} style={style} offset={18}>
+                <Space size={"middle"}>
+                  <Button type="primary" style={ButtonStyle} htmlType="submit">查询</Button>
+                  <Button style={ButtonStyle} onClick={() => {
+                    form.resetFields();
+                    resetPageArticleState();
+                  }}>重置</Button>
+                </Space>
+              </Col>
+            </Row>
+          </Form>
+        </Card>
+        <Card>
+          <Spin spinning={spin}>
+            <Table columns={columns} dataSource={dataSource} rowKey={record => record.id} pagination={pagination}>
 
-              </Table>
-            </Spin>
-          </Card>
-        </Space>
-      </PageContainer>
+            </Table>
+          </Spin>
+        </Card>
+      </Space>
       <Drawer
         title="文章设置"
         placement="right"

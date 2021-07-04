@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import {PageContainer} from "@ant-design/pro-layout";
 import {
   Button,
   Card,
@@ -32,6 +31,7 @@ const ArticleCategory: React.FC<{}> = () => {
   const [total, setTotal] = useState<number>(0);
   //控制按钮组:0新增,1修改
   const [buttonControl, setButtonControl] = useState<number>(0);
+  const [categoryAction, setCategoryAction] = useState<string>("添加分类")
   const columns = [
     {
       title: '分类名称',
@@ -101,10 +101,13 @@ const ArticleCategory: React.FC<{}> = () => {
 
   const categoryEdit = (id: number, name: string) => {
     //执行编辑的逻辑
+    setButtonControl(1);
+    setCategoryAction("编辑分类")
+    form.setFieldsValue({id: id, name: name});
   }
 
   const confirm = (id: number) => {
-    deleteCategory(id).then(r=>{
+    deleteCategory(id).then(r => {
       message.success("删除成功");
       pageCategory({page, pageSize}).then(r => {
         setDataSource(r.obj.records)
@@ -118,13 +121,18 @@ const ArticleCategory: React.FC<{}> = () => {
       setTotal(r.obj.total);
     })
     message.success(result);
-    form.setFieldsValue({name: null});
   };
 
   const error = (result: string) => {
     message.warning(result);
   };
   const onFinish = (values: Category) => {
+    // 保存还是修复的flag,如果是保存,清空表单的值
+    let flag = 0;
+    if (values.id != null) {
+      // 修改
+      flag = 1;
+    }
     setSpin(true)
     saveCategory(values).then(r => {
       if (r.success) {
@@ -135,7 +143,10 @@ const ArticleCategory: React.FC<{}> = () => {
         setSpin(false)
       }
     });
-    form.setFieldsValue(null);
+    if (flag === 0) {
+      // 保存的话 清空
+      form.setFieldsValue({id: null, name: null});
+    }
   }
   const cancel = () => {
 
@@ -148,45 +159,50 @@ const ArticleCategory: React.FC<{}> = () => {
     if (buttonControl == 1) {
       // 修改
       return (
-        <Button type="dashed">返回添加</Button>
+        <Button type="dashed" onClick={() => {
+          setButtonControl(0);
+          setCategoryAction("添加分类");
+          form.setFieldsValue({id: null, name: null});
+        }}>返回添加</Button>
       )
     }
     return null;
   }
 
   return (
-    <PageContainer>
-      <Row gutter={24}>
-        <Col span={14}>
-          <Card title="分类列表" bordered={false}>
-            <Spin spinning={spin}>
-              <Table columns={columns} dataSource={dataSource} rowKey={record => record.id} pagination={pagination}>
+    <Row gutter={24}>
+      <Col span={14}>
+        <Card title="分类列表" bordered={false}>
+          <Spin spinning={spin}>
+            <Table columns={columns} dataSource={dataSource} rowKey={record => record.id} pagination={pagination}>
 
-              </Table>
-            </Spin>
-          </Card>
-        </Col>
-        <Col span={10}>
-          <Card title="添加分类" bordered={false}>
-            <Spin spinning={spin}>
-              <Form onFinish={onFinish} layout="vertical" form={form}>
-                <Form.Item name="name" label="分类名称：">
-                  <Input/>
-                </Form.Item>
-                <Form.Item {...tailLayout}>
-                  <ButtonGroup>
-                    <Button htmlType="submit" type="primary">
-                      保存
-                    </Button>
-                    {displayButton()}
-                  </ButtonGroup>
-                </Form.Item>
-              </Form>
-            </Spin>
-          </Card>
-        </Col>
-      </Row>
-    </PageContainer>
+            </Table>
+          </Spin>
+        </Card>
+      </Col>
+      <Col span={10}>
+        <Card title={categoryAction} bordered={false}>
+          <Spin spinning={spin}>
+            <Form onFinish={onFinish} layout="vertical" form={form}>
+              <Form.Item name="id" hidden={true}>
+                <Input/>
+              </Form.Item>
+              <Form.Item name="name" label="分类名称：">
+                <Input/>
+              </Form.Item>
+              <Form.Item {...tailLayout}>
+                <ButtonGroup>
+                  <Button htmlType="submit" type="primary">
+                    保存
+                  </Button>
+                  {displayButton()}
+                </ButtonGroup>
+              </Form.Item>
+            </Form>
+          </Spin>
+        </Card>
+      </Col>
+    </Row>
   );
 }
 export default ArticleCategory;

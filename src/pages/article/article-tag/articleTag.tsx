@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import {PageContainer} from "@ant-design/pro-layout";
 import {
   Button,
   Card,
@@ -32,6 +31,7 @@ const ArticleTag: React.FC<{}> = () => {
   const [total, setTotal] = useState<number>(0);
   //控制按钮组:0新增,1修改
   const [buttonControl, setButtonControl] = useState<number>(0);
+  const [tagAction, setTagAction] = useState<string>("添加标签")
   const columns = [
     {
       title: '标签名称',
@@ -101,10 +101,13 @@ const ArticleTag: React.FC<{}> = () => {
 
   const tagEdit = (id: number, name: string) => {
     //执行编辑的逻辑
+    setButtonControl(1);
+    setTagAction("编辑标签");
+    form.setFieldsValue({id: id, name: name});
   }
 
   const confirm = (id: number) => {
-    deleteTag(id).then(r=>{
+    deleteTag(id).then(r => {
       message.success("删除成功");
       pageTag({page, pageSize}).then(r => {
         setDataSource(r.obj.records)
@@ -125,6 +128,12 @@ const ArticleTag: React.FC<{}> = () => {
     message.warning(result);
   };
   const onFinish = (values: OneArticleTag) => {
+    // 保存还是修复的flag,如果是保存,清空表单的值
+    let flag = 0;
+    if (values.id != null) {
+      // 修改
+      flag = 1;
+    }
     setSpin(true)
     saveTag(values).then(r => {
       if (r.success) {
@@ -135,7 +144,10 @@ const ArticleTag: React.FC<{}> = () => {
         setSpin(false)
       }
     });
-    form.setFieldsValue(null);
+    if (flag === 0) {
+      // 保存的话 清空
+      form.setFieldsValue({id: null, name: null});
+    }
   }
   const cancel = () => {
 
@@ -148,45 +160,47 @@ const ArticleTag: React.FC<{}> = () => {
     if (buttonControl == 1) {
       // 修改
       return (
-        <Button type="dashed">返回添加</Button>
+        <Button type="dashed" onClick={() => {
+          setButtonControl(0);
+          setTagAction("添加标签");
+          form.setFieldsValue({id: null, name: null});
+        }}>返回添加</Button>
       )
     }
     return null;
   }
 
   return (
-    <PageContainer>
-      <Row gutter={24}>
-        <Col span={14}>
-          <Card title="标签列表" bordered={false}>
-            <Spin spinning={spin}>
-              <Table columns={columns} dataSource={dataSource} rowKey={record => record.id} pagination={pagination}>
+    <Row gutter={24}>
+      <Col span={14}>
+        <Card title="标签列表" bordered={false}>
+          <Spin spinning={spin}>
+            <Table columns={columns} dataSource={dataSource} rowKey={record => record.id} pagination={pagination}>
 
-              </Table>
-            </Spin>
-          </Card>
-        </Col>
-        <Col span={10}>
-          <Card title="添加标签" bordered={false}>
-            <Spin spinning={spin}>
-              <Form onFinish={onFinish} layout="vertical" form={form}>
-                <Form.Item name="name" label="标签名称：">
-                  <Input/>
-                </Form.Item>
-                <Form.Item {...tailLayout}>
-                  <ButtonGroup>
-                    <Button htmlType="submit" type="primary">
-                      保存
-                    </Button>
-                    {displayButton()}
-                  </ButtonGroup>
-                </Form.Item>
-              </Form>
-            </Spin>
-          </Card>
-        </Col>
-      </Row>
-    </PageContainer>
+            </Table>
+          </Spin>
+        </Card>
+      </Col>
+      <Col span={10}>
+        <Card title={tagAction} bordered={false}>
+          <Spin spinning={spin}>
+            <Form onFinish={onFinish} layout="vertical" form={form}>
+              <Form.Item name="name" label="标签名称：">
+                <Input/>
+              </Form.Item>
+              <Form.Item {...tailLayout}>
+                <ButtonGroup>
+                  <Button htmlType="submit" type="primary">
+                    保存
+                  </Button>
+                  {displayButton()}
+                </ButtonGroup>
+              </Form.Item>
+            </Form>
+          </Spin>
+        </Card>
+      </Col>
+    </Row>
   );
 }
 export default ArticleTag;
