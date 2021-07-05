@@ -1,6 +1,5 @@
 import React, {useState} from "react";
-import {Button, Card, Col, Form, Input, Menu, message, Radio, Row, Select, Space, Tabs} from "antd";
-import {GridContent} from "@ant-design/pro-layout";
+import {Button, Card, Col, Form, Input, Menu, message, Radio, Row, Select, Space, Tabs, Upload} from "antd";
 import styles from './style.less';
 import {FormattedMessage} from "@@/plugin-locale/localeExports";
 import BaseView from "@/pages/account/settings/components/base";
@@ -45,7 +44,7 @@ const Settings: React.FC<{}> = () => {
   return (
     <>
       <Card>
-        <GridContent>
+
           <div
             className={styles.main}
           >
@@ -63,7 +62,7 @@ const Settings: React.FC<{}> = () => {
               {renderChildren()}
             </div>
           </div>
-        </GridContent>
+
       </Card>
     </>
   )

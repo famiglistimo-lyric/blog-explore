@@ -1,10 +1,11 @@
 import {UploadOutlined} from '@ant-design/icons';
-import {Button, Input, Select, Upload, Form, message} from 'antd';
-import {connect, FormattedMessage, formatMessage} from 'umi';
-import React, {Component, useState} from 'react';
+import {Button, Input, Select, Upload, Form} from 'antd';
+import React from 'react';
 import styles from './BaseView.less';
 import GeographicView from "@/pages/account/settings/components/GeographicView";
 import ImgCrop from 'antd-img-crop';
+import 'antd/es/modal/style';
+import 'antd/es/slider/style';
 
 const {Option} = Select;
 // const onChange = ({ fileList: newFileList }) => {
@@ -35,7 +36,7 @@ const AvatarView = ({avatar}: { avatar: string }) => (
     <div className={styles.avatar}>
       <img src={avatar} alt="avatar"/>
     </div>
-    <ImgCrop>
+    <ImgCrop shape={"round"}>
       <Upload showUploadList={false}>
         <div className={styles.button_view}>
           <Button>
