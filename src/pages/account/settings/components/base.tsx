@@ -1,223 +1,147 @@
-import { UploadOutlined } from '@ant-design/icons';
-import { Button, Input, Select, Upload, Form, message } from 'antd';
-import { connect, FormattedMessage, formatMessage } from 'umi';
-import React, { Component } from 'react';
-
-import type { CurrentUser } from '../data.d';
-import GeographicView from './GeographicView';
-import PhoneView from './PhoneView';
+import {UploadOutlined} from '@ant-design/icons';
+import {Button, Input, Select, Upload, Form, message} from 'antd';
+import {connect, FormattedMessage, formatMessage} from 'umi';
+import React, {Component, useState} from 'react';
 import styles from './BaseView.less';
+import GeographicView from "@/pages/account/settings/components/GeographicView";
+import ImgCrop from 'antd-img-crop';
 
-const { Option } = Select;
+const {Option} = Select;
+// const onChange = ({ fileList: newFileList }) => {
+//   setFileList(newFileList);
+// };
 
+// const onPreview = async (file: { url: any; originFileObj: Blob; }) => {
+//   let src = file.url;
+//   if (!src) {
+//     src = await new Promise(resolve => {
+//       const reader = new FileReader();
+//       reader.readAsDataURL(file.originFileObj);
+//       reader.onload = () => resolve(reader.result);
+//     });
+//   }
+//   const image = new Image();
+//   image.src = src;
+//   const imgWindow = window.open(src);
+//   imgWindow.document.write(image.outerHTML);
+// };
 // 头像组件 方便以后独立，增加裁剪之类的功能
-const AvatarView = ({ avatar }: { avatar: string }) => (
+const AvatarView = ({avatar}: { avatar: string }) => (
   <>
     <div className={styles.avatar_title}>
-      <FormattedMessage id="accountandsettings.basic.avatar" defaultMessage="Avatar" />
+      头像
     </div>
+
     <div className={styles.avatar}>
-      <img src={avatar} alt="avatar" />
+      <img src={avatar} alt="avatar"/>
     </div>
-    <Upload showUploadList={false}>
-      <div className={styles.button_view}>
-        <Button>
-          <UploadOutlined />
-          <FormattedMessage
-            id="accountandsettings.basic.change-avatar"
-            defaultMessage="Change avatar"
-          />
-        </Button>
-      </div>
-    </Upload>
+    <ImgCrop>
+      <Upload showUploadList={false}>
+        <div className={styles.button_view}>
+          <Button>
+            <UploadOutlined/>
+            点击上传
+          </Button>
+        </div>
+      </Upload>
+    </ImgCrop>
   </>
 );
-interface SelectItem {
-  label: string;
-  key: string;
-}
 
-const validatorGeographic = (
-  _: any,
-  value: {
-    province: SelectItem;
-    city: SelectItem;
-  },
-  callback: (message?: string) => void,
-) => {
-  const { province, city } = value;
-  if (!province.key) {
-    callback('Please input your province!');
-  }
-  if (!city.key) {
-    callback('Please input your city!');
-  }
-  callback();
-};
+const BaseView: React.FC<{}> = () => {
 
-const validatorPhone = (rule: any, value: string, callback: (message?: string) => void) => {
-  const values = value.split('-');
-  if (!values[0]) {
-    callback('Please input your area code!');
-  }
-  if (!values[1]) {
-    callback('Please input your phone number!');
-  }
-  callback();
-};
+  const handleFinish = () => {
 
-interface BaseViewProps {
-  currentUser?: CurrentUser;
-}
-
-class BaseView extends Component<BaseViewProps> {
-  view: HTMLDivElement | undefined = undefined;
-
-  getAvatarURL() {
-    const { currentUser } = this.props;
-    if (currentUser) {
-      if (currentUser.avatar) {
-        return currentUser.avatar;
-      }
-      const url = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
-      return url;
-    }
-    return '';
   }
 
-  getViewDom = (ref: HTMLDivElement) => {
-    this.view = ref;
-  };
-
-  handleFinish = () => {
-    message.success(formatMessage({ id: 'accountandsettings.basic.update.success' }));
-  };
-
-  render() {
-    const { currentUser } = this.props;
-
-    return (
-      <div className={styles.baseView} ref={this.getViewDom}>
-        <div className={styles.left}>
-          <Form
-            layout="vertical"
-            onFinish={this.handleFinish}
-            initialValues={currentUser}
-            hideRequiredMark
+  const getAvatarURL = () => {
+    return "https://yi-blog.oss-cn-hangzhou.aliyuncs.com/ceshi/Screenshot_20210424_204530.jpg";
+  }
+  return (
+    <div className={styles.baseView}>
+      <div className={styles.left}>
+        <Form
+          layout="vertical"
+          onFinish={handleFinish}
+        >
+          <Form.Item
+            name="QQ"
+            label={"QQ"}
           >
-            <Form.Item
-              name="email"
-              label={formatMessage({ id: 'accountandsettings.basic.email' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'accountandsettings.basic.email-message' }, {}),
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="name"
-              label={formatMessage({ id: 'accountandsettings.basic.nickname' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'accountandsettings.basic.nickname-message' }, {}),
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="profile"
-              label={formatMessage({ id: 'accountandsettings.basic.profile' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'accountandsettings.basic.profile-message' }, {}),
-                },
-              ]}
-            >
-              <Input.TextArea
-                placeholder={formatMessage({ id: 'accountandsettings.basic.profile-placeholder' })}
-                rows={4}
-              />
-            </Form.Item>
-            <Form.Item
-              name="country"
-              label={formatMessage({ id: 'accountandsettings.basic.country' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'accountandsettings.basic.country-message' }, {}),
-                },
-              ]}
-            >
-              <Select style={{ maxWidth: 220 }}>
-                <Option value="China">中国</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name="geographic"
-              label={formatMessage({ id: 'accountandsettings.basic.geographic' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'accountandsettings.basic.geographic-message' }, {}),
-                },
-                {
-                  validator: validatorGeographic,
-                },
-              ]}
-            >
-              <GeographicView />
-            </Form.Item>
-            <Form.Item
-              name="address"
-              label={formatMessage({ id: 'accountandsettings.basic.address' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'accountandsettings.basic.address-message' }, {}),
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="phone"
-              label={formatMessage({ id: 'accountandsettings.basic.phone' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'accountandsettings.basic.phone-message' }, {}),
-                },
-                { validator: validatorPhone },
-              ]}
-            >
-              <PhoneView />
-            </Form.Item>
-            <Form.Item>
-              <Button htmlType="submit" type="primary">
-                <FormattedMessage
-                  id="accountandsettings.basic.update"
-                  defaultMessage="Update Information"
-                />
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
-        <div className={styles.right}>
-          <AvatarView avatar={this.getAvatarURL()} />
-        </div>
+            <Input/>
+          </Form.Item>
+          <Form.Item
+            name="wechat"
+            label={"微信"}
+          >
+            <Input/>
+          </Form.Item>
+          <Form.Item
+            name="email"
+            label={"邮箱"}
+          >
+            <Input/>
+          </Form.Item>
+          <Form.Item
+            name="nickname"
+            label={"昵称"}
+          >
+            <Input/>
+          </Form.Item>
+          <Form.Item
+            name="userSignature"
+            label={"个性签名"}
+            rules={[
+              {
+                required: true,
+                message: "请输入个人简介",
+              },
+            ]}
+          >
+            <Input.TextArea
+              placeholder={"个性签名"}
+              rows={4}
+            />
+          </Form.Item>
+          <Form.Item
+            name="country"
+            label={"国家或地区"}
+            rules={[
+              {
+                required: true,
+                message: "请输入您的国家或地区!"
+              },
+            ]}
+          >
+            <Select style={{maxWidth: 220}}>
+              <Option value="China">中国</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name="geographic"
+            label={"地理位置"}
+            rules={[
+              {
+                required: true,
+                message: "请输入您的地理位置!"
+              },
+            ]}
+          >
+            <GeographicView/>
+          </Form.Item>
+          <Form.Item>
+            <Button htmlType="submit" type="primary">
+              更新信息
+            </Button>
+          </Form.Item>
+        </Form>
       </div>
-    );
-  }
+      <div className={styles.right}>
+        <AvatarView avatar={getAvatarURL()}/>
+      </div>
+    </div>
+
+  );
 }
 
-export default connect(
-  ({ accountAndsettings }: { accountAndsettings: { currentUser: CurrentUser } }) => ({
-    currentUser: accountAndsettings.currentUser,
-  }),
-)(BaseView);
+export default BaseView;

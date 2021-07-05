@@ -279,9 +279,8 @@ export default defineConfig({
                 },
                 {
                   name: 'settings',
-                  icon: 'smile',
-                  path: '/account/settings',
-                  component: './account/settings',
+                  path: '/account/settings/settings',
+                  component: './account/settings/settings',
                 },
               ],
             },
@@ -296,31 +295,26 @@ export default defineConfig({
                 },
                 {
                   name: 'article-all',
-                  icon: 'smile',
                   path: '/article/article-all/articleAll',
                   component: './article/article-all/articleAll',
                 },
                 {
                   name: 'article-edit',
-                  icon: 'smile',
                   path: '/article/article-edit/articleEditor',
                   component: './article/article-edit/articleEditor',
                 },
                 {
                   name: 'article-category',
-                  icon: 'smile',
                   path: '/article/article-category/articleCategory',
                   component: './article/article-category/articleCategory',
                 },
                 {
                   name: 'article-tag',
-                  icon: 'smile',
                   path: '/article/article-tag/articleTag',
                   component: './article/article-tag/articleTag',
                 },
               ],
-            }
-            ,
+            },
             {
               component: '404',
             },
