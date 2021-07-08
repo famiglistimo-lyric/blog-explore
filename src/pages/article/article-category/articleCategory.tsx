@@ -14,7 +14,7 @@ import {
   Popconfirm,
 } from "antd";
 import {ArticleCategoryItem, Category} from "@/pages/article/article-category/data";
-import {deleteCategory, pageCategory, saveCategory} from "@/pages/article/article-category/category";
+import {deleteCategory, pageCategory, saveCategory} from "@/pages/article/article-category/service";
 import ButtonGroup from "antd/es/button/button-group";
 
 const ArticleCategory: React.FC<{}> = () => {

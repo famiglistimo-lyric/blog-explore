@@ -24,13 +24,13 @@ import mark from 'markdown-it-mark';
 import tasklists from 'markdown-it-task-lists';
 import hljs from "highlight.js";
 import 'highlight.js/styles/atom-one-light.css';
-import {saveArticle} from "@/pages/article/article-all/article";
+import {saveArticle} from "@/pages/article/article-all/service";
 
 const PLUGINS = undefined;
 MdEditor.use(Plugins.TabInsert, {
   tabMapValue: 1, // note that 1 means a '\t' instead of ' '.
 });
-const AllArticleTableList: React.FC<{}> = () => {
+const ArticleEditor: React.FC<{}> = () => {
   const [form] = Form.useForm();
   const [articleContent, setArticleContent] = useState<any>("");
   const [taskLists, setTaskLists] = useState<any>(null);
@@ -151,4 +151,4 @@ const AllArticleTableList: React.FC<{}> = () => {
 
   )
 }
-export default AllArticleTableList;
+export default ArticleEditor;

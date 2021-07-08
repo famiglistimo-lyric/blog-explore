@@ -1,7 +1,6 @@
 import React, {useState} from "react";
 import {Button, Card, Col, Form, Input, Menu, message, Radio, Row, Select, Space, Tabs, Upload} from "antd";
 import styles from './style.less';
-import {FormattedMessage} from "@@/plugin-locale/localeExports";
 import BaseView from "@/pages/account/settings/components/base";
 import NotificationView from "@/pages/account/settings/components/notification";
 
@@ -14,13 +13,10 @@ const Settings: React.FC<{}> = () => {
   const [selectKey, setSelectKey] = useState<any>('base');
   const menuMap = {
     base: (
-      <FormattedMessage id="account-and-settings.menuMap.basic" defaultMessage="Basic Settings"/>
+      "基本设置"
     ),
     notification: (
-      <FormattedMessage
-        id="account-and-settings.menuMap.notification"
-        defaultMessage="New Message Notification"
-      />
+      "消息通知"
     ),
   };
   const getMenu = () => {

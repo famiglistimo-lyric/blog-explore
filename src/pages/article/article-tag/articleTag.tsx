@@ -14,7 +14,7 @@ import {
   Popconfirm,
 } from "antd";
 import {ArticleTagItem, OneArticleTag} from "@/pages/article/article-tag/data";
-import {deleteTag, pageTag, saveTag} from "@/pages/article/article-tag/tag";
+import {deleteTag, pageTag, saveTag} from "@/pages/article/article-tag/service";
 import ButtonGroup from "antd/es/button/button-group";
 
 const ArticleTag: React.FC<{}> = () => {

@@ -1,43 +1,30 @@
 import {UploadOutlined} from '@ant-design/icons';
 import {Button, Input, Select, Upload, Form} from 'antd';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './BaseView.less';
 import GeographicView from "@/pages/account/settings/components/GeographicView";
 import ImgCrop from 'antd-img-crop';
 import 'antd/es/modal/style';
 import 'antd/es/slider/style';
+import {getUser} from "@/pages/account/settings/service";
 
-const {Option} = Select;
-// const onChange = ({ fileList: newFileList }) => {
-//   setFileList(newFileList);
-// };
+const onChange = (file: any) => {
+  console.log(file)
+  console.log("asdasasd")
+};
 
-// const onPreview = async (file: { url: any; originFileObj: Blob; }) => {
-//   let src = file.url;
-//   if (!src) {
-//     src = await new Promise(resolve => {
-//       const reader = new FileReader();
-//       reader.readAsDataURL(file.originFileObj);
-//       reader.onload = () => resolve(reader.result);
-//     });
-//   }
-//   const image = new Image();
-//   image.src = src;
-//   const imgWindow = window.open(src);
-//   imgWindow.document.write(image.outerHTML);
-// };
-// 头像组件 方便以后独立，增加裁剪之类的功能
+// 头像组件 增加裁剪的功能
 const AvatarView = ({avatar}: { avatar: string }) => (
   <>
     <div className={styles.avatar_title}>
       头像
     </div>
-
     <div className={styles.avatar}>
       <img src={avatar} alt="avatar"/>
     </div>
     <ImgCrop shape={"round"}>
-      <Upload showUploadList={false}>
+      <Upload showUploadList={false}
+              onChange={onChange}>
         <div className={styles.button_view}>
           <Button>
             <UploadOutlined/>
@@ -51,12 +38,23 @@ const AvatarView = ({avatar}: { avatar: string }) => (
 
 const BaseView: React.FC<{}> = () => {
 
-  const handleFinish = () => {
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    // todo 登录写完就改这个
+    getUser(1).then(r => {
+      console.log(r);
+      form.setFieldsValue(r.obj)
+    });
+  })
+
+  const handleFinish = (values: any) => {
 
   }
 
   const getAvatarURL = () => {
-    return "https://yi-blog.oss-cn-hangzhou.aliyuncs.com/ceshi/Screenshot_20210424_204530.jpg";
+    return "https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png"
+    // return "https://yi-blog.oss-cn-hangzhou.aliyuncs.com/ceshi/Screenshot_20210424_204530.jpg";
   }
   return (
     <div className={styles.baseView}>
@@ -64,9 +62,10 @@ const BaseView: React.FC<{}> = () => {
         <Form
           layout="vertical"
           onFinish={handleFinish}
+          form={form}
         >
           <Form.Item
-            name="QQ"
+            name="qq"
             label={"QQ"}
           >
             <Input/>
@@ -105,20 +104,6 @@ const BaseView: React.FC<{}> = () => {
             />
           </Form.Item>
           <Form.Item
-            name="country"
-            label={"国家或地区"}
-            rules={[
-              {
-                required: true,
-                message: "请输入您的国家或地区!"
-              },
-            ]}
-          >
-            <Select style={{maxWidth: 220}}>
-              <Option value="China">中国</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
             name="geographic"
             label={"地理位置"}
             rules={[
@@ -141,7 +126,6 @@ const BaseView: React.FC<{}> = () => {
         <AvatarView avatar={getAvatarURL()}/>
       </div>
     </div>
-
   );
 }
 

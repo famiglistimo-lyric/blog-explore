@@ -16,7 +16,7 @@ import {
   Tag,
   message,
 } from "antd";
-import {getArticle, listCategory, listTag, pageArticle, saveArticle} from './article'
+import {getArticle, listCategory, listTag, pageArticle, saveArticle} from './service'
 import type {Article, ArticleListItem, CategorySelectItem, TagSelectItem} from './data.d';
 
 const ArticleTableList: React.FC<{}> = () => {

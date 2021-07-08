@@ -15,3 +15,8 @@ export async function queryCity(province: string) {
 export async function query() {
   return request('/api/users');
 }
+
+// 分类列表分页
+export function getUser(userId: number) {
+  return request(`/api/user/getUser?id=${userId}`);
+}
