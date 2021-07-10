@@ -2,14 +2,14 @@ import request from '@/utils/request';
 import {ArticleCategoryItem, Category} from "@/pages/article/article-category/data";
 
 // 分类列表分页
-export function pageCategory(params?: ArticleCategoryItem) {
+export async function pageCategory(params?: ArticleCategoryItem) {
   return request(`/api/category/pageCategory`, {
     params
   });
 }
 
 // 保存文章分类
-export function saveCategory(category: Category) {
+export async function saveCategory(category: Category) {
   return request(`/api/category/saveCategory`, {
     method: 'POST',
     data: category,
@@ -17,6 +17,6 @@ export function saveCategory(category: Category) {
 }
 
 // 删除文章分类
-export function deleteCategory(id: number) {
+export async function deleteCategory(id: number) {
   return request(`/api/category/deleteCategory?id=${id}`);
 }

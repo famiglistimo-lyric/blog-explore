@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Button, Card, Col, Form, Input, message, Row, Select, Space, Table} from "antd";
+import {Button, Form, Input, message} from "antd";
 // @ts-ignore
 import MarkdownIt from 'markdown-it';
 import MdEditor, {Plugins} from 'react-markdown-editor-lite';
@@ -33,7 +33,6 @@ MdEditor.use(Plugins.TabInsert, {
 const ArticleEditor: React.FC<{}> = () => {
   const [form] = Form.useForm();
   const [articleContent, setArticleContent] = useState<any>("");
-  const [taskLists, setTaskLists] = useState<any>(null);
   const [mdEditor, setMdEditor] = useState<any>(null);
   const mdParser = new MarkdownIt({
     html: true,

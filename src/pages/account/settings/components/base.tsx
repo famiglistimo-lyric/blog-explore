@@ -1,61 +1,76 @@
 import {UploadOutlined} from '@ant-design/icons';
-import {Button, Input, Select, Upload, Form} from 'antd';
+import {Button, Input, Upload, Form, message} from 'antd';
 import React, {useEffect, useState} from 'react';
 import styles from './BaseView.less';
 import GeographicView from "@/pages/account/settings/components/GeographicView";
 import ImgCrop from 'antd-img-crop';
 import 'antd/es/modal/style';
 import 'antd/es/slider/style';
-import {getUser} from "@/pages/account/settings/service";
+import { getUser, saveUser} from "@/pages/account/settings/service";
+import {getPolicy} from "@/services/utils";
 
-const onChange = (file: any) => {
-  console.log(file)
-  console.log("asdasasd")
-};
-
-// 头像组件 增加裁剪的功能
-const AvatarView = ({avatar}: { avatar: string }) => (
-  <>
-    <div className={styles.avatar_title}>
-      头像
-    </div>
-    <div className={styles.avatar}>
-      <img src={avatar} alt="avatar"/>
-    </div>
-    <ImgCrop shape={"round"}>
-      <Upload showUploadList={false}
-              onChange={onChange}>
-        <div className={styles.button_view}>
-          <Button>
-            <UploadOutlined/>
-            点击上传
-          </Button>
-        </div>
-      </Upload>
-    </ImgCrop>
-  </>
-);
 
 const BaseView: React.FC<{}> = () => {
-
+  const [fileList, setFileList] = useState<any>([]);
+  const [avatar, setAvatar] = useState<string>("https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png")
+  const [ossData, setOssData] = useState<any>({});
   const [form] = Form.useForm();
 
   useEffect(() => {
     // todo 登录写完就改这个
     getUser(1).then(r => {
-      console.log(r);
+      if (typeof (r.obj.avatar) != "undefined" && r.obj.avatar != "") {
+        setAvatar(r.obj.avatar);
+      }
       form.setFieldsValue(r.obj)
     });
-  })
+    getPolicy().then(r => {
+      setOssData({
+        policy: r.obj.policy,
+        signature: r.obj.signature,
+        expire: r.obj.expire,
+        host: r.obj.host,
+        accessId: r.obj.accessid,
+        dir: r.obj.dir,
+        UUID: r.obj.UUID
+      });
+    })
+  }, []);
+
+  const onChange = ({fileList}: any) => {
+    setFileList(fileList);
+    if (fileList[0].status === "done") {
+      let avatarUrl = ossData.host + "/" + ossData.dir + ossData.UUID + fileList[0].name
+      setAvatar(avatarUrl)
+    }
+  };
 
   const handleFinish = (values: any) => {
+    values.avatar = avatar;
+    saveUser(values).then(r => {
+      if (r.success) {
+        // todo 登录写完就改这个
+        message.success(r.msg);
+        getUser(1).then(r => {
+          form.setFieldsValue(r.obj)
+        });
+      } else {
+        message.error(r.msg);
+      }
+    })
+  };
 
+  const getExtraData = (file: any) => {
+    return {
+      key: ossData.dir + ossData.UUID + file.name,
+      OSSAccessKeyId: ossData.accessId,
+      policy: ossData.policy,
+      signature: ossData.signature,
+      host: ossData.host,
+      dir: ossData.dir
+    };
   }
 
-  const getAvatarURL = () => {
-    return "https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png"
-    // return "https://yi-blog.oss-cn-hangzhou.aliyuncs.com/ceshi/Screenshot_20210424_204530.jpg";
-  }
   return (
     <div className={styles.baseView}>
       <div className={styles.left}>
@@ -64,6 +79,12 @@ const BaseView: React.FC<{}> = () => {
           onFinish={handleFinish}
           form={form}
         >
+          <Form.Item
+            name="id"
+            label={"id"}
+            hidden={true}
+          ><Input/>
+          </Form.Item>
           <Form.Item
             name="qq"
             label={"QQ"}
@@ -123,7 +144,30 @@ const BaseView: React.FC<{}> = () => {
         </Form>
       </div>
       <div className={styles.right}>
-        <AvatarView avatar={getAvatarURL()}/>
+        <div className={styles.avatar_title}>
+          头像
+        </div>
+        <div className={styles.avatar}>
+          <img src={avatar} alt="avatar"/>
+        </div>
+        <ImgCrop shape={"round"}>
+          <Upload
+            name={"file"}
+            action={"https://yi-blog.oss-cn-hangzhou.aliyuncs.com"}
+            multiple={true}
+            showUploadList={false}
+            data={getExtraData}
+            fileList={fileList}
+            onChange={onChange}
+          >
+            <div className={styles.button_view}>
+              <Button>
+                <UploadOutlined/>
+                点击上传
+              </Button>
+            </div>
+          </Upload>
+        </ImgCrop>
       </div>
     </div>
   );
