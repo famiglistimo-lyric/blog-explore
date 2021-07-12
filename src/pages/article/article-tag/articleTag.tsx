@@ -92,6 +92,7 @@ const ArticleTag: React.FC<{}> = () => {
       })
     }
   }
+
   useEffect(() => {
     pageTag({page, pageSize}).then(r => {
       setDataSource(r.obj.records)

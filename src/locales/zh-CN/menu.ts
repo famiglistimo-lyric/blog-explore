@@ -54,4 +54,6 @@ export default {
   'menu.article.article-edit':'写文章',
   'menu.article.article-category':'文章分类',
   'menu.article.article-tag':'文章标签',
+  'menu.support':'支持',
+  'menu.support.technical-support':'技术支持',
 };

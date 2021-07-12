@@ -316,6 +316,18 @@ export default defineConfig({
               ],
             },
             {
+              name:'support',
+              icon: 'LikeOutlined',
+              path:'/support',
+              routes: [
+                {
+                  name:'technical-support',
+                  path: '/support/technical-support/technicalSupport',
+                  component: './support/technical-support/technicalSupport',
+                },
+              ],
+            },
+            {
               component: '404',
             },
           ],
