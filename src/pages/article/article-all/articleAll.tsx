@@ -183,7 +183,6 @@ const ArticleTableList: React.FC<{}> = () => {
   }
 
   const putArticle = (values: Article) => {
-    console.log(values)
     let finalTagList: any = [];
     for (let i = 0; i < values.tagList.length; i++) {
       // 如果是数据存在的标签是传的id,如果是数据库不存在的标签是传的新添加的标签

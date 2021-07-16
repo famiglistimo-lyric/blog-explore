@@ -1,68 +1,40 @@
 import React, {useEffect, useState} from "react";
 import {
-  Button,
-  Card,
-  Col, Form, Input, message, Popconfirm,
-  Row, Select, Space, Spin, Table, Tag,
+  Button, Card, Col, Descriptions, Form, Input, message, PageHeader, Popconfirm,
+  Row, Space, Spin, Table
 } from "antd";
 import './style.less';
-import {ArticleTagItem} from "@/pages/article/article-tag/data";
-import {deleteTag, pageTag} from "@/pages/article/article-tag/service";
+import {deleteTechnicalSupport, pageTechnicalSupport} from "@/pages/support/technical-support/service";
+import {TechnicalSupportItem} from "@/pages/support/technical-support/data";
 
 const TechnicalSupport: React.FC<{}> = () => {
 
   const [form] = Form.useForm();
   const [spin, setSpin] = useState<boolean>(false);
-  const [dataSource, setDataSource] = useState<ArticleTagItem[]>([]);
+  const [dataSource, setDataSource] = useState<TechnicalSupportItem[]>([]);
   const initialPage = 1;
   const initialPageSize = 5;
   const [page, setPage] = useState<number>(initialPage);
   const [pageSize, setPageSize] = useState<number | undefined>(initialPageSize);
   const [total, setTotal] = useState<number>(0);
+  const [realName, setRealName] = useState<string | undefined>(undefined);
+  const [cardList, setCardList] = useState<any>([]);
   const columns = [
-    {
-      title: '标签名称',
-      dataIndex: 'name',
-      render: (name: string) => {
-        let finalName = name;
-        if (name.length > 15) {
-          finalName = name.substring(0, 15) + "...";
-        }
-        return finalName;
-      }
-    },
-    {
-      title: '文章数',
-      dataIndex: 'articleCounts',
-      render: (articleCounts: number) => (
-        <Tag color='#1e90ff' key={articleCounts} style={{borderRadius: '25px'}}>
-          {articleCounts}
-        </Tag>
-      ),
-    },
     {
       title: '名字',
       dataIndex: 'realName',
-      render: (articleCounts: number) => (
-        articleCounts ? <Tag color='#1e90ff' key={articleCounts} style={{borderRadius: '25px'}}>
-          {articleCounts}
-        </Tag> : null
-      ),
+      valueType: 'textarea',
     },
     {
       title: '昵称',
-      dataIndex: 'nickName',
-      render: (articleCounts: number) => (
-        <Tag color='#1e90ff' key={articleCounts} style={{borderRadius: '25px'}}>
-          {articleCounts}
-        </Tag>
-      ),
+      dataIndex: 'nickname',
+      valueType: 'textarea',
     },
     {
       title: '操作',
       dataIndex: 'operation',
       render: (text: any, record: any) => {
-        let title = "您确定要删除'" + record.nickName + "'这位小伙伴吗？"
+        let title = "您确定要删除'" + record.nickname + "'这位小伙伴吗？"
         return (
           <Space size="middle">
             <a onClick={() => {
@@ -77,12 +49,12 @@ const TechnicalSupport: React.FC<{}> = () => {
             >
               <a>删除</a>
             </Popconfirm>
-
           </Space>
         )
       }
     },
   ];
+
 
   const pagination = {
     current: page,
@@ -94,19 +66,47 @@ const TechnicalSupport: React.FC<{}> = () => {
     onChange: (page: number, pageSize: number | undefined) => {
       setPage(page);
       setPageSize(pageSize);
-      pageTag({page, pageSize}).then(r => {
+      let values = {
+        page, pageSize, realName
+      }
+      pageTechnicalSupport(values).then(r => {
         setDataSource(r.obj.records)
         setTotal(r.obj.total);
+        showCardList(r.obj.records);
       })
     }
   }
 
   useEffect(() => {
-    pageTag({page, pageSize}).then(r => {
+    pageTechnicalSupport({page, pageSize}).then(r => {
       setDataSource(r.obj.records)
       setTotal(r.obj.total);
+      showCardList(r.obj.records);
     })
   }, [])
+
+  const pageTechnicalSupportState = (values: TechnicalSupportItem) => {
+    setSpin(true)
+    setRealName(values.realName);
+    pageTechnicalSupport(values).then(r => {
+      setDataSource(r.obj.records);
+      setTotal(r.obj.total);
+      showCardList(r.obj.records);
+      setSpin(false);
+    })
+  }
+
+  const resetPageTechnicalSupportState = () => {
+    setSpin(true)
+    setPage(initialPage);
+    setPageSize(initialPageSize);
+    pageTechnicalSupport().then(r => {
+      setDataSource(r.obj.records);
+      setTotal(r.obj.total);
+      showCardList(r.obj.records);
+      setSpin(false)
+    })
+  }
 
   const cancel = () => {
 
@@ -117,11 +117,42 @@ const TechnicalSupport: React.FC<{}> = () => {
   };
 
   const confirm = (id: number) => {
-
+    deleteTechnicalSupport(id).then(r => {
+      message.success("删除成功");
+      pageTechnicalSupport({page, pageSize}).then(r => {
+        setDataSource(r.obj.records)
+        setTotal(r.obj.total);
+      })
+    });
   }
 
-  const pageTechnicalSupport = () => {
-
+  const showCardList = (records: any) => {
+    let length = records.length;
+    let finalCardList = [];
+    for (let i = 0; i < length; i++) {
+      let record = records[i];
+      let avatar = {src:record.avatar}
+      finalCardList.push(
+        <Card className="right-card-item-wrapper">
+        <PageHeader
+          title={record.nickname}
+          className="site-page-header"
+          avatar={avatar}
+        >
+          <Descriptions>
+            <Descriptions.Item label="姓名">{record.realName}</Descriptions.Item>
+            <Descriptions.Item label="联系方式">
+              <a>{record.contact}</a>
+            </Descriptions.Item>
+            <Descriptions.Item label="创建时间">{record.createTime}</Descriptions.Item>
+            <Descriptions.Item label="职业">{record.profession}</Descriptions.Item>
+            <Descriptions.Item label="备注">{record.remarks}</Descriptions.Item>
+          </Descriptions>
+        </PageHeader>
+      </Card>
+      )
+    }
+    setCardList(finalCardList)
   }
 
   return (
@@ -137,25 +168,27 @@ const TechnicalSupport: React.FC<{}> = () => {
         </div>
         <div>
           <Card bordered={true} className="card-list-wrapper">
-            <Form onFinish={pageTechnicalSupport} form={form}>
-              <Row gutter={16}>
-                <Col className="gutter-row" span={6}>
-                  <div className="card-list-button-wrapper">
-                    <div>
-                      <Form.Item name="realName" label="名字" className="card-list-queryInput">
-                        <Input/>
-                      </Form.Item>
-
-                    </div>
-                      <Button type="primary" htmlType="submit">查询</Button>
-                      <Button onClick={() => {
-                        form.resetFields();
-                      }}>重置</Button>
-                      <Button onClick={() => {
-
-                      }}>新增</Button>
-
+            <Form onFinish={pageTechnicalSupportState} form={form}>
+              <Row gutter={24}>
+                <Col className="gutter-row" span={12}>
+                  <div>
+                    <Form.Item name="realName" label="名字" className="card-list-queryInput">
+                      <Input/>
+                    </Form.Item>
                   </div>
+                </Col>
+                <Col className="gutter-row" span={12}>
+                  <div className="card-list-button-wrapper">
+                    <Button type="primary" htmlType="submit">查询</Button>
+                    <Button onClick={() => {
+                      form.resetFields();
+                      resetPageTechnicalSupportState();
+                    }}>重置</Button>
+                    <Button onClick={() => {
+
+                    }}>新增</Button>
+                  </div>
+
                 </Col>
               </Row>
             </Form>
@@ -169,7 +202,9 @@ const TechnicalSupport: React.FC<{}> = () => {
 
       </Col>
       <Col span={14}>
-        <div>dasdasdasdas</div>
+        <div className="right-card-items-wrapper">
+          {cardList}
+        </div>
       </Col>
     </Row>
   )
