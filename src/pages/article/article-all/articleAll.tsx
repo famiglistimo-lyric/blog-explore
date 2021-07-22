@@ -339,7 +339,7 @@ const ArticleTableList: React.FC<{}> = () => {
             <Input/>
           </Form.Item>
           <Form.Item name="title" label="文章标题">
-            <Input/>
+            <Input placeholder={"文章标题"}/>
           </Form.Item>
           <Form.Item name="status" label="文章状态">
             <Select placeholder="请选择状态">

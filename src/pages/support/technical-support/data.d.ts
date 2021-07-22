@@ -4,3 +4,13 @@ export interface TechnicalSupportItem {
   page: number;
   pageSize: number | undefined;
 }
+
+export interface TechnicalSupport {
+  id?: Key;
+  realName?: string;
+  nickname: string;
+  avatar: string;
+  remarks?: string;
+  profession?: string;
+  contact?: string;
+}
