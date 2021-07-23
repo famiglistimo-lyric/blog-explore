@@ -28,6 +28,7 @@ const TechnicalSupport: React.FC<{}> = () => {
   const [form] = Form.useForm();
   const [drawerForm] = Form.useForm();
   const [spin, setSpin] = useState<boolean>(false);
+  const [cardSpin, setCardSpin] = useState<boolean>(false);
   const [dataSource, setDataSource] = useState<TechnicalSupportItem[]>([]);
   const initialPage = 1;
   const initialPageSize = 5;
@@ -107,19 +108,21 @@ const TechnicalSupport: React.FC<{}> = () => {
   }, [])
 
   const pageTechnicalSupportState = (values: TechnicalSupportItem) => {
-    setSpin(true)
+    setSpin(true);
+    setCardSpin(true);
     setRealName(values.realName);
     pageTechnicalSupport(values).then(r => {
       setDataSource(r.obj.records);
       setTotal(r.obj.total);
       showCardList(r.obj.records);
       setSpin(false);
+      setCardSpin(false);
     })
   }
 
   const resetPageTechnicalSupportState = () => {
     setSpin(true)
-
+    setCardSpin(true);
     setPage(initialPage);
     setPageSize(initialPageSize);
     pageTechnicalSupport().then(r => {
@@ -127,6 +130,7 @@ const TechnicalSupport: React.FC<{}> = () => {
       setTotal(r.obj.total);
       showCardList(r.obj.records);
       setSpin(false)
+      setCardSpin(false);
     })
   }
 
@@ -135,7 +139,7 @@ const TechnicalSupport: React.FC<{}> = () => {
   }
 
   const showDrawer = (id?: number) => {
-    if(id != null){
+    if (id != null) {
       getTechnicalSupport(id).then(r => {
         setAvatar(r.obj.avatar)
         drawerForm.setFieldsValue(r.obj);
@@ -148,7 +152,7 @@ const TechnicalSupport: React.FC<{}> = () => {
     deleteTechnicalSupport(id).then(r => {
       message.success("删除成功");
       pageTechnicalSupport({page, pageSize}).then(r => {
-        setDataSource(r.obj.records)
+        setDataSource(r.obj.records);
         setTotal(r.obj.total);
         showCardList(r.obj.records);
       })
@@ -297,7 +301,9 @@ const TechnicalSupport: React.FC<{}> = () => {
         </Col>
         <Col span={14}>
           <div className="right-card-items-wrapper">
+            <Spin spinning={cardSpin}>
             {cardList}
+            </Spin>
           </div>
         </Col>
       </Row>
@@ -316,7 +322,7 @@ const TechnicalSupport: React.FC<{}> = () => {
             <Input/>
           </Form.Item>
           <Form.Item name="nickname" label="昵称"
-                     rules={[{ required: true, message: '必须输入昵称!' }]}>
+                     rules={[{required: true, message: '必须输入昵称!'}]}>
             <Input placeholder={"昵称"}/>
           </Form.Item>
           <Form.Item name="avatar" label="头像">
@@ -351,12 +357,15 @@ const TechnicalSupport: React.FC<{}> = () => {
           <Form.Item name="contact" label="联系方式">
             <Input placeholder={"联系方式"}/>
           </Form.Item>
+          <Form.Item name="technicalSupportWebsite" label="个人网站地址">
+            <Input placeholder={"个人网站地址"}/>
+          </Form.Item>
           <Form.Item name="profession" label="职业">
             <Input placeholder={"职业"}/>
           </Form.Item>
           <Form.Item name="remarks" label="备注">
             <Input.TextArea
-              placeholder={"个性签名"}
+              placeholder={"备注"}
               rows={4}
             />
           </Form.Item>

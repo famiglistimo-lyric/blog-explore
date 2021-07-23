@@ -10,6 +10,7 @@ export interface TechnicalSupport {
   realName?: string;
   nickname: string;
   avatar: string;
+  technicalSupportWebsite? :string;
   remarks?: string;
   profession?: string;
   contact?: string;
