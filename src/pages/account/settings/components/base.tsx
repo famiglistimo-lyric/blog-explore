@@ -13,7 +13,7 @@ import {getPolicy} from "@/services/utils";
 const BaseView: React.FC<{}> = () => {
   const [fileList, setFileList] = useState<any>([]);
   const [avatar, setAvatar] = useState<string>("https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png")
-  const [banner,setBanner] = useState<string>("https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png")
+  const [banner,setBanner] = useState<string | null>("https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png")
   const [ossData, setOssData] = useState<any>({});
   const [form] = Form.useForm();
 
@@ -35,6 +35,7 @@ const BaseView: React.FC<{}> = () => {
     if (fileList[0].status === "done") {
       let avatarUrl = ossData.host + "/" + ossData.dir + ossData.UUID + fileList[0].name
       setAvatar(avatarUrl)
+      setFileList([])
     }
   };
 
@@ -43,6 +44,7 @@ const BaseView: React.FC<{}> = () => {
     if (fileList[0].status === "done") {
       let bannerUrl = ossData.host + "/" + ossData.dir + ossData.UUID + fileList[0].name
       setBanner(bannerUrl)
+      setFileList([])
     }
   };
 
