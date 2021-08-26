@@ -10,7 +10,7 @@ export interface ArticleListItem {
 
 export interface Article {
   id?: Key;
-  title: string;
+  title?: string;
   content?: any;
   status: number;
   categoryId: number;

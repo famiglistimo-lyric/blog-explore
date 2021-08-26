@@ -249,6 +249,7 @@ const TechnicalSupport: React.FC<{}> = () => {
     if (fileList[0].status === "done") {
       let avatarUrl = ossData.host + "/" + ossData.dir + ossData.UUID + fileList[0].name
       setAvatar(avatarUrl)
+      setFileList([])
     }
   };
 

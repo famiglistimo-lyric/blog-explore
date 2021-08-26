@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Form, Input, message} from "antd";
 // @ts-ignore
 import MarkdownIt from 'markdown-it';
@@ -25,12 +25,16 @@ import tasklists from 'markdown-it-task-lists';
 import hljs from "highlight.js";
 import 'highlight.js/styles/atom-one-light.css';
 import {saveArticle} from "@/pages/article/article-all/service";
+import {useLocation} from 'react-router-dom'
+import {getArticleDetail} from "@/pages/article/article-edit/service";
+import './style.less';
 
 const PLUGINS = undefined;
 MdEditor.use(Plugins.TabInsert, {
   tabMapValue: 1, // note that 1 means a '\t' instead of ' '.
 });
 const ArticleEditor: React.FC<{}> = () => {
+  const location = useLocation();
   const [form] = Form.useForm();
   const [articleContent, setArticleContent] = useState<any>("");
   const [mdEditor, setMdEditor] = useState<any>(null);
@@ -64,8 +68,7 @@ const ArticleEditor: React.FC<{}> = () => {
     setArticleContent(it.text);
   };
   // 上传图片
-  const handleImageUpload = (file: File,callback:any) => {
-    console.log("大家好啊");
+  const handleImageUpload = (file: File, callback: any) => {
     return "";
     // return new Promise(resolve => {
     //   const reader = new FileReader();
@@ -76,6 +79,16 @@ const ArticleEditor: React.FC<{}> = () => {
     //   reader.readAsDataURL(file);
     // });
   };
+
+  useEffect(() => {
+    let articleId = location.state;
+    if (typeof (articleId) != "undefined") {
+      getArticleDetail(articleId).then(r => {
+        setArticleContent(r.obj.content)
+        form.setFieldsValue(r.obj)
+      })
+    }
+  }, [])
 
   function renderHTML(text: string) {
     return mdParser.render(text);
@@ -112,13 +125,13 @@ const ArticleEditor: React.FC<{}> = () => {
   return (
     <>
       <Form onFinish={onFinish} form={form}>
-        <Form.Item name="title">
-          <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
+        <div style={{width: "100%", display: "flex", justifyContent: "center",margin:"18px 0 32px 0"}}>
+          <Form.Item name="title">
             <Input placeholder="文章标题" style={{width: 600, marginRight: "13px"}}/>
-            <Button htmlType="submit" type="primary" style={{marginRight: "13px"}}>保存</Button>
-            <Button htmlType="submit" type="primary" style={{marginRight: "13px"}}>存为草稿</Button>
-          </div>
-        </Form.Item>
+          </Form.Item>
+          <Button htmlType="submit" type="primary" style={{marginRight: "13px"}}>保存</Button>
+          <Button htmlType="submit" type="primary" style={{marginRight: "13px"}}>存为草稿</Button>
+        </div>
       </Form>
       <div className="editor-wrap" style={{marginTop: '30px'}}>
         <MdEditor

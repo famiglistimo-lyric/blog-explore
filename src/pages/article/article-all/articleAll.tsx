@@ -18,10 +18,12 @@ import {
 } from "antd";
 import {getArticle, listCategory, listTag, pageArticle, saveArticle} from './service'
 import type {Article, ArticleListItem, CategorySelectItem, TagSelectItem} from './data.d';
+import {useHistory} from "react-router";
 
 const ArticleTableList: React.FC<{}> = () => {
   const [form] = Form.useForm();
   const [drawerForm] = Form.useForm();
+  let history = useHistory()
   const inputStyle = {width: 250};
   const selectStyle = {width: 180};
   const ButtonStyle = {width: 80};
@@ -109,7 +111,9 @@ const ArticleTableList: React.FC<{}> = () => {
       dataIndex: 'operation',
       render: (text: any, record: any) => (
         <Space size="middle">
-          <a>编辑</a>
+          <a onClick={() => {
+            changeRoute(record.id)
+          }}>编辑</a>
           <a onClick={() => {
             showDrawer(record.id)
           }}>设置</a>
@@ -224,6 +228,12 @@ const ArticleTableList: React.FC<{}> = () => {
       setSpin(false)
     })
   }
+  const changeRoute = (id: number) => {
+    // 改变路由
+    history.push({
+      pathname:'/article/article-edit/articleEditor',state:id
+    })
+  };
 
   const showDrawer = (id: number) => {
     setDrawerVisible(true)
