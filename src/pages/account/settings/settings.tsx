@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Button, Card, Col, Form, Input, Menu, message, Radio, Row, Select, Space, Tabs, Upload} from "antd";
+import {Card, Menu} from "antd";
 import styles from './style.less';
 import BaseView from "@/pages/account/settings/components/base";
 import NotificationView from "@/pages/account/settings/components/notification";

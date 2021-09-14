@@ -13,7 +13,7 @@ import {getPolicy} from "@/services/utils";
 const BaseView: React.FC<{}> = () => {
   const [fileList, setFileList] = useState<any>([]);
   const [avatar, setAvatar] = useState<string>("https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png")
-  const [banner,setBanner] = useState<string | null>("https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png")
+  const [banner,setBanner] = useState<string>("https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png")
   const [ossData, setOssData] = useState<any>({});
   const [form] = Form.useForm();
 
@@ -87,7 +87,6 @@ const BaseView: React.FC<{}> = () => {
         UUID: r.obj.UUID
       });
     })
-
     return file;
   };
 

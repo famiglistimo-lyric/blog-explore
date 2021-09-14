@@ -26,9 +26,10 @@ import hljs from "highlight.js";
 import 'highlight.js/styles/atom-one-light.css';
 import {getArticle, listCategory, listTag, saveArticle} from "@/pages/article/article-all/service";
 import {useLocation} from 'react-router-dom'
-import {getArticleDetail} from "@/pages/article/article-edit/service";
+import {getArticleDetail, uploadToOss} from "@/pages/article/article-edit/service";
 import './style.less';
 import {Article, CategorySelectItem, TagSelectItem} from "@/pages/article/article-all/data";
+import {getPolicy} from "@/services/utils";
 
 const PLUGINS = undefined;
 MdEditor.use(Plugins.TabInsert, {
@@ -46,6 +47,8 @@ const ArticleEditor: React.FC<{}> = () => {
   const [form] = Form.useForm();
   const [drawerForm] = Form.useForm();
   const [articleContent, setArticleContent] = useState<any>("");
+  const [title, setTitle] = useState<any>("");
+  const [articleId, setArticleId] = useState<any>(undefined);
   const [mdEditor, setMdEditor] = useState<any>(null);
   const [drawerVisible, setDrawerVisible] = useState<boolean>(false);
   const [categorySelectItems, setCategorySelectItems] = useState<any[] | undefined>(undefined);
@@ -77,20 +80,27 @@ const ArticleEditor: React.FC<{}> = () => {
     // todo
     .use(tasklists)
   const handleEditorChange = (it: { text: string; html: string }, event: any) => {
-    // console.log('handleEditorChange', it.text, it.html, event);
     setArticleContent(it.text);
   };
   // 上传图片
   const handleImageUpload = (file: File, callback: any) => {
-    return "";
-    // return new Promise(resolve => {
-    //   const reader = new FileReader();
-    //   reader.onload = data => {
-    //     // @ts-ignore
-    //     resolve(data.target.result);
-    //   };
-    //   reader.readAsDataURL(file);
-    // });
+    let formData = new FormData();
+    // 取出file的后缀
+    let fileName = file.name
+    let fileNameSuffix = fileName.substring(fileName.indexOf('.'))
+    getPolicy().then(r => {
+      formData.append('key',r.obj.dir + r.obj.UUID + fileNameSuffix)
+      formData.append('OSSAccessKeyId',r.obj.accessid)
+      formData.append('policy',r.obj.policy)
+      formData.append('signature',r.obj.signature)
+      formData.append('host',r.obj.host)
+      formData.append('dir',r.obj.dir)
+      formData.append('file',file);
+      uploadToOss(formData).then(response=>{
+        callback(r.obj.host + "/" + r.obj.dir + r.obj.UUID + fileNameSuffix)
+      })
+    })
+
   };
 
   useEffect(() => {
@@ -144,14 +154,23 @@ const ArticleEditor: React.FC<{}> = () => {
       }
     }
     values.tagList = finalTagList;
-    saveArticle(values).then(r => {
+    let article = {
+      id: articleId, title: title, content: articleContent, status: values.status,
+      categoryId: values.categoryId, tagList: values.tagList,
+      stamp: values.stamp, comments: values.comments, recommend: values.recommend,
+      appreciate: values.appreciate
+    };
+    saveArticle(article).then(r => {
       if (r.success) {
         onClose();
         success(r.msg);
+        form.resetFields();
+        drawerForm.resetFields();
+        setArticleContent("");
       } else {
         error(r.msg);
       }
-    });
+    })
   }
 
   const success = (result: string) => {
@@ -177,7 +196,7 @@ const ArticleEditor: React.FC<{}> = () => {
 
   const showDrawer = (id: number) => {
     setDrawerVisible(true)
-    if(typeof(id) == "undefined"){
+    if (typeof (id) == "undefined") {
       // 新增
       return;
     }
@@ -212,26 +231,15 @@ const ArticleEditor: React.FC<{}> = () => {
       message.warn(warnMessage);
       return;
     }
+    setTitle(title);
+    setArticleId(id);
     // 打开抽屉
     showDrawer(id);
-    // let article = {
-    //   title: title, content: markdownContent, status: 1
-    //   , categoryId: 1, tagList: [{id: 9}], stamp: true, comments: true, recommend: true, appreciate: true
-    // };
-    // saveArticle(article).then(r => {
-    //   if (r.success) {
-    //     message.success(r.msg)
-    //     form.resetFields();
-    //     setArticleContent("");
-    //   } else {
-    //     message.warn(r.msg);
-    //   }
-    // })
   }
   return (
     <>
       <Form onFinish={onFinish} form={form}>
-        <div style={{width: "100%", display: "flex", justifyContent: "center",margin:"18px 0 32px 0"}}>
+        <div style={{width: "100%", display: "flex", justifyContent: "center", margin: "18px 0 32px 0"}}>
           <Form.Item name="id" hidden={true}>
             <Input/>
           </Form.Item>
@@ -280,9 +288,6 @@ const ArticleEditor: React.FC<{}> = () => {
         <Form {...layout} form={drawerForm} onFinish={putArticle}>
           <Form.Item name="id" label="文章id" hidden={true}>
             <Input/>
-          </Form.Item>
-          <Form.Item name="title" label="文章标题">
-            <Input placeholder={"文章标题"}/>
           </Form.Item>
           <Form.Item name="status" label="文章状态">
             <Select placeholder="请选择状态">
