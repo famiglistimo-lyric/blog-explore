@@ -22,9 +22,16 @@ for (let i = 0; i < fakeY2.length; i += 1) {
   });
 }
 
-const salesData = [];
+const commentsData = [];
 for (let i = 0; i < 12; i += 1) {
-  salesData.push({
+  commentsData.push({
+    x: `${i + 1}月`,
+    y: Math.floor(Math.random() * 1000) + 200,
+  });
+}
+const viewsData = [];
+for (let i = 0; i < 12; i += 1) {
+  viewsData.push({
     x: `${i + 1}月`,
     y: Math.floor(Math.random() * 1000) + 200,
   });
@@ -182,7 +189,8 @@ radarOriginData.forEach((item) => {
 const getFakeChartData: AnalysisData = {
   visitData,
   visitData2,
-  salesData,
+  commentsData,
+  viewsData,
   searchData,
   offlineData,
   offlineChartData,

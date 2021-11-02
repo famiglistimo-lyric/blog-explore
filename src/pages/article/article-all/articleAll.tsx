@@ -14,9 +14,9 @@ import {
   Spin,
   Table,
   Tag,
-  message,
+  message, Popconfirm,
 } from "antd";
-import {getArticle, listCategory, listTag, pageArticle, saveArticle} from './service'
+import {getArticle, listCategory, listTag, pageArticle, saveArticle, deleteArticle} from './service'
 import type {Article, ArticleListItem, CategorySelectItem, TagSelectItem} from './data.d';
 import {useHistory} from "react-router";
 
@@ -114,6 +114,11 @@ const ArticleTableList: React.FC<{}> = () => {
           <a onClick={() => {
             changeRoute(record.id)
           }}>编辑</a>
+          <Popconfirm title="确定要删除吗?" onConfirm={() => {
+            deleteArticlePre(record.id)
+          }}>
+            <a>删除</a>
+          </Popconfirm>
           <a onClick={() => {
             showDrawer(record.id)
           }}>设置</a>
@@ -231,9 +236,23 @@ const ArticleTableList: React.FC<{}> = () => {
   const changeRoute = (id: number) => {
     // 改变路由
     history.push({
-      pathname:'/article/article-edit/articleEditor',state:id
+      pathname: '/article/article-edit/articleEditor', state: id
     })
   };
+
+  const deleteArticlePre = (id: number) => {
+    deleteArticle(id).then(r => {
+      if (r.success) {
+        success(r.msg);
+        pageArticle({page, pageSize}).then(r => {
+          setDataSource(r.obj.records)
+          setTotal(r.obj.total);
+        });
+      } else {
+        error(r.msg);
+      }
+    });
+  }
 
   const showDrawer = (id: number) => {
     setDrawerVisible(true)

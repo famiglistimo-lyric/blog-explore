@@ -3,6 +3,23 @@ export interface VisitDataType {
   y: number;
 }
 
+export interface CommentCardDataType {
+  totalComments: number;
+  weekGrowth: string;
+  dayGrowth: string;
+  dayComments: number;
+}
+
+export interface ViewDataType {
+  totalViews: number;
+  dayViews: number;
+}
+
+export interface ReadDataType {
+  x: string;
+  y: number;
+}
+
 export interface SearchDataType {
   index: number;
   keyword: string;
@@ -31,7 +48,8 @@ export interface RadarData {
 export interface AnalysisData {
   visitData: VisitDataType[];
   visitData2: VisitDataType[];
-  salesData: VisitDataType[];
+  commentsData: VisitDataType[];
+  viewsData: VisitDataType[];
   searchData: SearchDataType[];
   offlineData: OfflineDataType[];
   offlineChartData: OfflineChartData[];

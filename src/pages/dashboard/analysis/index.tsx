@@ -13,7 +13,7 @@ import type { AnalysisData } from './data.d';
 import styles from './style.less';
 
 import IntroduceRow from './components/IntroduceRow';
-import SalesCard from './components/SalesCard';
+import BlogCard from './components/BlogCard';
 import TopSearch from './components/TopSearch';
 import ProportionSales from './components/ProportionSales';
 import OfflineData from './components/OfflineData';
@@ -21,7 +21,7 @@ import OfflineData from './components/OfflineData';
 type RangePickerValue = RangePickerProps<moment.Moment>['value'];
 
 interface AnalysisProps {
-  dashboardAndanalysis: AnalysisData;
+  dashboardAndAnalysis: AnalysisData;
   dispatch: Dispatch;
   loading: boolean;
 }
@@ -47,7 +47,7 @@ class Analysis extends Component<AnalysisProps, AnalysisState> {
     const { dispatch } = this.props;
     this.reqRef = requestAnimationFrame(() => {
       dispatch({
-        type: 'dashboardAndanalysis/fetch',
+        type: 'dashboardAndAnalysis/fetch',
       });
     });
   }
@@ -55,7 +55,7 @@ class Analysis extends Component<AnalysisProps, AnalysisState> {
   componentWillUnmount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'dashboardAndanalysis/clear',
+      type: 'dashboardAndAnalysis/clear',
     });
     cancelAnimationFrame(this.reqRef);
     clearTimeout(this.timeoutId);
@@ -80,7 +80,7 @@ class Analysis extends Component<AnalysisProps, AnalysisState> {
     });
 
     dispatch({
-      type: 'dashboardAndanalysis/fetchSalesData',
+      type: 'dashboardAndAnalysis/fetchSalesData',
     });
   };
 
@@ -91,7 +91,7 @@ class Analysis extends Component<AnalysisProps, AnalysisState> {
     });
 
     dispatch({
-      type: 'dashboardAndanalysis/fetchSalesData',
+      type: 'dashboardAndAnalysis/fetchSalesData',
     });
   };
 
@@ -101,6 +101,7 @@ class Analysis extends Component<AnalysisProps, AnalysisState> {
       return '';
     }
     const value = getTimeDistance(type);
+    console.log(value,"adjiasjdasiasiddi")
     if (!value) {
       return '';
     }
@@ -118,18 +119,19 @@ class Analysis extends Component<AnalysisProps, AnalysisState> {
 
   render() {
     const { rangePickerValue, salesType, currentTabKey } = this.state;
-    const { dashboardAndanalysis, loading } = this.props;
+    const { dashboardAndAnalysis, loading } = this.props;
     const {
       visitData,
       visitData2,
-      salesData,
+      commentsData,
+      viewsData,
       searchData,
       offlineData,
       offlineChartData,
       salesTypeData,
       salesTypeDataOnline,
       salesTypeDataOffline,
-    } = dashboardAndanalysis;
+    } = dashboardAndAnalysis;
     let salesPieData;
     if (salesType === 'all') {
       salesPieData = salesTypeData;
@@ -155,45 +157,15 @@ class Analysis extends Component<AnalysisProps, AnalysisState> {
     return (
       <GridContent>
         <React.Fragment>
-          <IntroduceRow loading={loading} visitData={visitData} />
-          <SalesCard
+          <IntroduceRow loading={loading} viewVisitData={visitData} readVisitData={visitData}/>
+          <BlogCard
             rangePickerValue={rangePickerValue}
-            salesData={salesData}
+            commentsData={commentsData}
+            viewsData={viewsData}
             isActive={this.isActive}
             handleRangePickerChange={this.handleRangePickerChange}
             loading={loading}
             selectDate={this.selectDate}
-          />
-          <Row
-            gutter={24}
-            style={{
-              marginTop: 24,
-            }}
-          >
-            <Col xl={12} lg={24} md={24} sm={24} xs={24}>
-              <TopSearch
-                loading={loading}
-                visitData2={visitData2}
-                searchData={searchData}
-                dropdownGroup={dropdownGroup}
-              />
-            </Col>
-            <Col xl={12} lg={24} md={24} sm={24} xs={24}>
-              <ProportionSales
-                dropdownGroup={dropdownGroup}
-                salesType={salesType}
-                loading={loading}
-                salesPieData={salesPieData}
-                handleChangeSalesType={this.handleChangeSalesType}
-              />
-            </Col>
-          </Row>
-          <OfflineData
-            activeKey={activeKey}
-            loading={loading}
-            offlineData={offlineData}
-            offlineChartData={offlineChartData}
-            handleTabChange={this.handleTabChange}
           />
         </React.Fragment>
       </GridContent>
@@ -203,15 +175,15 @@ class Analysis extends Component<AnalysisProps, AnalysisState> {
 
 export default connect(
   ({
-    dashboardAndanalysis,
+     dashboardAndAnalysis,
     loading,
   }: {
-    dashboardAndanalysis: any;
+    dashboardAndAnalysis: any;
     loading: {
       effects: Record<string, boolean>;
     };
   }) => ({
-    dashboardAndanalysis,
-    loading: loading.effects['dashboardAndanalysis/fetch'],
+    dashboardAndAnalysis,
+    loading: loading.effects['dashboardAndAnalysis/fetch'],
   }),
 )(Analysis);

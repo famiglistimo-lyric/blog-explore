@@ -30,3 +30,8 @@ export async function saveArticle(article: Article) {
     data: article,
   });
 }
+
+// 删除文章
+export async function deleteArticle(id: number) {
+  return request(`/api/article/deleteArticle?articleId=${id}`);
+}

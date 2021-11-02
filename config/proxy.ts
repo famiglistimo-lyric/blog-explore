@@ -6,6 +6,7 @@
  * https://pro.ant.design/docs/deploy
  */
 
+// const apiAddress='http://www.yizone.link'
 const apiAddress='http://localhost:8065'
 
 export default {

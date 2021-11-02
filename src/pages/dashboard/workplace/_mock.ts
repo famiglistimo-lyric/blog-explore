@@ -28,6 +28,20 @@ for (let i = 0; i < 12; i += 1) {
     y: Math.floor(Math.random() * 1000) + 200,
   });
 }
+const commentsData = [];
+for (let i = 0; i < 12; i += 1) {
+  commentsData.push({
+    x: `${i + 1}月`,
+    y: Math.floor(Math.random() * 1000) + 200,
+  });
+}
+const viewsData = [];
+for (let i = 0; i < 12; i += 1) {
+  viewsData.push({
+    x: `${i + 1}月`,
+    y: Math.floor(Math.random() * 1000) + 200,
+  });
+}
 const searchData = [];
 for (let i = 0; i < 50; i += 1) {
   searchData.push({
@@ -383,6 +397,8 @@ export default {
     visitData,
     visitData2,
     salesData,
+    commentsData,
+    viewsData,
     searchData,
     offlineData,
     offlineChartData,
